@@ -1,7 +1,8 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import pluginReact from "eslint-plugin-react";
-import eslintConfigPrettier from "eslint-config-prettier"; // Add
+import eslintConfigPrettier from "eslint-config-prettier";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 
 export default [
   {
@@ -11,9 +12,15 @@ export default [
         version: "detect",
       },
     },
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
   },
-  { languageOptions: { globals: globals.browser } },
+  eslintPluginPrettierRecommended,
   pluginJs.configs.recommended,
   pluginReact.configs.flat.recommended,
-  eslintConfigPrettier, // Add
+  eslintConfigPrettier,
 ];
