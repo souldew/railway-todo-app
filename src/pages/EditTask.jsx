@@ -4,6 +4,8 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 import { url } from "../const";
 import { useNavigate, useParams } from "react-router-dom";
+import { DateInput } from "../components/DateInput";
+import { format, parse } from "date-fns";
 import "./editTask.scss";
 
 export const EditTask = () => {
@@ -14,6 +16,7 @@ export const EditTask = () => {
   const [detail, setDetail] = useState("");
   const [isDone, setIsDone] = useState();
   const [errorMessage, setErrorMessage] = useState("");
+  const [date, setDate] = useState(new Date());
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleDetailChange = (e) => setDetail(e.target.value);
   const handleIsDoneChange = (e) => setIsDone(e.target.value === "done");
@@ -23,6 +26,7 @@ export const EditTask = () => {
       title: title,
       detail: detail,
       done: isDone,
+      limit: format(date, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
     };
 
     axios
@@ -67,6 +71,7 @@ export const EditTask = () => {
         setTitle(task.title);
         setDetail(task.detail);
         setIsDone(task.done);
+        setDate(parse(task.limit, "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()));
       })
       .catch((err) => {
         setErrorMessage(`タスク情報の取得に失敗しました。${err}`);
@@ -118,6 +123,11 @@ export const EditTask = () => {
             />
             完了
           </div>
+          <br />
+          <label>期限</label>
+          <br />
+          <DateInput className="new-task-date" date={date} setDate={setDate} />
+          <br />
           <button
             type="button"
             className="delete-task-button"

@@ -4,6 +4,8 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 import { Header } from "../components/Header";
 import { url } from "../const";
+import { format, parse } from "date-fns";
+import PropTypes from "prop-types";
 import "./home.scss";
 
 export const Home = () => {
@@ -123,10 +125,45 @@ export const Home = () => {
 };
 
 // 表示するタスク
+// Tasks.propTypes = {
+//   tasks: PropTypes.string.isRequired,
+//   selectListId: PropTypes.string.isRequired,
+//   isDoneDisplay: PropTypes.string.isRequired,
+// };
 const Tasks = (props) => {
+  const formatLimit = (limit) => {
+    if (limit == undefined) {
+      return;
+    }
+    const formattedLimit = format(
+      parse(limit, "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date()),
+      "yyyy-MM-dd HH:mm",
+    );
+    return `期限: ${formattedLimit}`;
+  };
+  const calcDiff = (limit) => {
+    if (limit == undefined) {
+      return;
+    }
+
+    const formattedLimit = parse(limit, "yyyy-MM-dd'T'HH:mm:ss'Z'", new Date());
+    const current = (() => {
+      const ret = new Date();
+      ret.setSeconds(0);
+      return ret;
+    })();
+    const diffTime = formattedLimit - current;
+    if (diffTime < 0) {
+      return "期限切れ";
+    }
+    const restDates = parseInt(diffTime / (1000 * 60 * 60 * 24));
+    const restHours = parseInt((diffTime / (1000 * 60 * 60)) % 24);
+    const restMinutes = parseInt((diffTime / (1000 * 60)) % 60);
+    return `残り: ${restDates}日${restHours}時間${restMinutes}分`;
+  };
+
   const { tasks, selectListId, isDoneDisplay } = props;
   if (tasks === null) return <></>;
-
   if (isDoneDisplay == "done") {
     return (
       <ul>
@@ -134,7 +171,7 @@ const Tasks = (props) => {
           .filter((task) => {
             return task.done === true;
           })
-          .map((task, key) => (
+          .map((task, key) => {
             <li key={key} className="task-item">
               <Link
                 to={`/lists/${selectListId}/tasks/${task.id}`}
@@ -144,8 +181,8 @@ const Tasks = (props) => {
                 <br />
                 {task.done ? "完了" : "未完了"}
               </Link>
-            </li>
-          ))}
+            </li>;
+          })}
       </ul>
     );
   }
@@ -164,7 +201,23 @@ const Tasks = (props) => {
             >
               {task.title}
               <br />
-              {task.done ? "完了" : "未完了"}
+              <div
+                style={{ display: "flex", gap: "0 100px", marginRight: "1rem" }}
+              >
+                <div style={{ marginRight: "auto" }}>
+                  {task.done ? "完了" : "未完了"}
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "0 20px",
+                  }}
+                >
+                  <div>{formatLimit(task.limit)}</div>
+                  <div>{calcDiff(task.limit)}</div>
+                </div>
+              </div>
             </Link>
           </li>
         ))}

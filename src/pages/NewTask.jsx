@@ -5,24 +5,35 @@ import { url } from "../const";
 import { Header } from "../components/Header";
 import "./newTask.scss";
 import { useNavigate } from "react-router-dom";
+import { DateInput } from "../components/DateInput";
+import { format } from "date-fns";
 
 export const NewTask = () => {
   const [selectListId, setSelectListId] = useState();
   const [lists, setLists] = useState([]);
   const [title, setTitle] = useState("");
   const [detail, setDetail] = useState("");
+  const [date, setDate] = useState(
+    (() => {
+      const date = new Date();
+      date.setHours(23);
+      date.setMinutes(59);
+      return date;
+    })(),
+  );
   const [errorMessage, setErrorMessage] = useState("");
   const [cookies] = useCookies();
   const navigate = useNavigate();
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleDetailChange = (e) => setDetail(e.target.value);
   const handleSelectList = (id) => setSelectListId(id);
+
   const onCreateTask = () => {
     const data = {
       title: title,
       detail: detail,
       done: false,
-      limit: "2023-12-12T23:59:59Z",
+      limit: format(date, "yyyy-MM-dd'T'HH:mm:ss'Z'"),
     };
 
     axios
@@ -92,9 +103,14 @@ export const NewTask = () => {
             className="new-task-detail"
           />
           <br />
+          <label>期限</label>
+          <br />
+          <DateInput className="new-task-date" date={date} setDate={setDate} />
+          <br />
           <button
             type="button"
             className="new-task-button"
+            style={{ marginTop: "2rem" }}
             onClick={onCreateTask}
           >
             作成
