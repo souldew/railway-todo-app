@@ -65,6 +65,14 @@ export const Home = () => {
         setErrorMessage(`タスクの取得に失敗しました。${err}`);
       });
   };
+
+  const handleKeyDown = (event, id) => {
+    // event.preventDefault();
+    console.log("ok")
+    if (event.key == "Enter") {
+      handleSelectList(id);
+    }
+  }
   return (
     <div>
       <Header />
@@ -89,9 +97,13 @@ export const Home = () => {
               const isActive = list.id === selectListId;
               return (
                 <li
+                  role="button"
+                  tabIndex="0"
+                  onKeyDown={(e) => {handleKeyDown(e, list.id)}}
                   key={key}
                   className={`list-tab-item ${isActive ? "active" : ""}`}
                   onClick={() => handleSelectList(list.id)}
+                  style={{cursor: "pointer"}}
                 >
                   {list.title}
                 </li>
