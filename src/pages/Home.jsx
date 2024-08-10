@@ -68,11 +68,11 @@ export const Home = () => {
 
   const handleKeyDown = (event, id) => {
     // event.preventDefault();
-    console.log("ok")
+    console.log("ok");
     if (event.key == "Enter") {
       handleSelectList(id);
     }
-  }
+  };
   return (
     <div>
       <Header />
@@ -99,11 +99,13 @@ export const Home = () => {
                 <li
                   role="button"
                   tabIndex="0"
-                  onKeyDown={(e) => {handleKeyDown(e, list.id)}}
+                  onKeyDown={(e) => {
+                    handleKeyDown(e, list.id);
+                  }}
                   key={key}
                   className={`list-tab-item ${isActive ? "active" : ""}`}
                   onClick={() => handleSelectList(list.id)}
-                  style={{cursor: "pointer"}}
+                  style={{ cursor: "pointer" }}
                 >
                   {list.title}
                 </li>
@@ -184,16 +186,18 @@ const Tasks = (props) => {
             return task.done === true;
           })
           .map((task, key) => {
-            <li key={key} className="task-item">
-              <Link
-                to={`/lists/${selectListId}/tasks/${task.id}`}
-                className="task-item-link"
-              >
-                {task.title}
-                <br />
-                {task.done ? "完了" : "未完了"}
-              </Link>
-            </li>;
+            return (
+              <li key={key} className="task-item">
+                <Link
+                  to={`/lists/${selectListId}/tasks/${task.id}`}
+                  className="task-item-link"
+                >
+                  {task.title}
+                  <br />
+                  {task.done ? "完了" : "未完了"}
+                </Link>
+              </li>
+            );
           })}
       </ul>
     );
@@ -214,20 +218,19 @@ const Tasks = (props) => {
               {task.title}
               <br />
               <div
-                style={{ display: "flex", gap: "0 100px", marginRight: "1rem" }}
+                style={{
+                  display: "flex",
+                  gap: "0 100px",
+                  marginRight: "1rem",
+                  alignItems: "stretch",
+                }}
               >
                 <div style={{ marginRight: "auto" }}>
                   {task.done ? "完了" : "未完了"}
                 </div>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "0 20px",
-                  }}
-                >
-                  <div>{formatLimit(task.limit)}</div>
-                  <div>{calcDiff(task.limit)}</div>
+                <div className="limit-grid">
+                  <div className="limit-time">{formatLimit(task.limit)}</div>
+                  <div className="rest-time">{calcDiff(task.limit)}</div>
                 </div>
               </div>
             </Link>

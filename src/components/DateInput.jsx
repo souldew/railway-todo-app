@@ -32,6 +32,7 @@ export const DateInput = (props) => {
           }
           props.setDate(limit);
         }}
+        style={{ marginRight: "1rem" }}
       ></input>
       <input
         type="time"

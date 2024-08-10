@@ -6,6 +6,7 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
 
 export default [
   {
+    ignores: ["App.test.js"],
     files: ["**/*.{js,mjs,cjs,jsx}"],
     settings: {
       react: {
@@ -17,6 +18,15 @@ export default [
         ...globals.browser,
         ...globals.node,
       },
+    },
+    rules: {
+      "no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
     },
   },
   eslintPluginPrettierRecommended,
